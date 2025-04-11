@@ -1,0 +1,131 @@
+using Character.NPC.NPCWithDialogue;
+using Character.Player;
+using Systems.DialogueSystem.CameraController;
+using Systems.DialogueSystem.Nodes;
+using Systems.DialogueSystem.Presenter;
+using Systems.DialogueSystem.WebClient;
+using UnityEngine;
+
+namespace Systems.DialogueSystem
+{
+    public class DialogueManager : Singleton<DialogueManager>
+    {
+        [Header("References")] [SerializeField]
+        private DialogueCameraController _dialogueCameraController;
+
+        [SerializeField] private PlayerController _playerController;
+        [SerializeField] private DialoguePresenter _dialoguePresenter;
+        [SerializeField] private DialogueButtonController _dialogueButtonController;
+        [SerializeField] private DialogueInputFieldController _dialogueInputFieldController;
+
+        [Header("Dialogue value")] [SerializeField]
+        private bool _isDialogueRunning;
+
+        [SerializeField] private bool _canDialogue;
+        [SerializeField] private NPCWithDialogue _currentNPCWithDialogue;
+
+        private DialogueWebClient _dialogueWebClient;
+        private bool _isAIDialogueRunning;
+        private DialogueNodeInstance _currentNodeInstance;
+
+        public NPCWithDialogue CurrentNPCWithDialogue => _currentNPCWithDialogue;
+        public DialogueButtonController DialogueButtonController => _dialogueButtonController;
+        public DialogueNodeInstance CurrentNodeInstance => _currentNodeInstance;
+
+        private InputManager InputManager => InputManager.Instance;
+
+        private void OnEnable()
+        {
+            _dialogueButtonController.QuestionClickedEvent += OnQuestionClickedButton;
+            _dialogueInputFieldController.InputFieldAcceptedEvent += AIAcceptButtonHandler;
+            InputManager.InteractionButtonPressedEvent += InteractionButtonHandler;
+        }
+
+        private void OnDisable()
+        {
+            _dialogueButtonController.QuestionClickedEvent -= OnQuestionClickedButton;
+            _dialogueInputFieldController.InputFieldAcceptedEvent -= AIAcceptButtonHandler;
+            InputManager.InteractionButtonPressedEvent -= InteractionButtonHandler;
+        }
+
+        protected override async void Awake()
+        {
+            base.Awake();
+
+            _dialogueWebClient = new DialogueWebClient();
+            await _dialogueWebClient.GetAccessToken();
+        }
+
+        public void StartDialogue(NPCWithDialogue npcWithDialogue)
+        {
+            _currentNPCWithDialogue = npcWithDialogue;
+            _currentNodeInstance = new DialogueNodeInstance(npcWithDialogue.DialogueNode);
+            _dialogueCameraController.StartAnimCamera(_currentNPCWithDialogue, () =>
+            {
+                _dialoguePresenter.SetActiveDialogueUI(true);
+                _dialogueButtonController.UpdateQuestionButtonText(_currentNodeInstance.playerReplies);
+            });
+        }
+
+        public void StopDialogue()
+        {
+            _currentNPCWithDialogue = null;
+            _isDialogueRunning = false;
+            _dialogueCameraController.StartAnimCamera(_currentNPCWithDialogue,
+                () => { _dialoguePresenter.SetActiveDialogueUI(false); });
+        }
+
+        public void TriggerEnterNPCWithDialogue(NPCWithDialogue npcWithDialogue)
+        {
+            _canDialogue = true;
+            _currentNPCWithDialogue = npcWithDialogue;
+        }
+
+        public void TriggerExitNPCWithDialogue()
+        {
+            _canDialogue = false;
+            _currentNPCWithDialogue = null;
+        }
+
+        private void OnQuestionClickedButton(int indexPlayerReplay)
+        {
+            if (_currentNPCWithDialogue.DialogueNode.playerReplies[indexPlayerReplay].allowCustomInput ||
+                _isAIDialogueRunning)
+            {
+                _dialogueInputFieldController.SetActiveDialogueInputFieldUI(true);
+                _isAIDialogueRunning = true;
+                return;
+            }
+
+            _currentNodeInstance = new DialogueNodeInstance(
+                _currentNodeInstance.playerReplies[indexPlayerReplay].nextNode);
+
+            if (_currentNodeInstance.isEndNode)
+            {
+                StopDialogue();
+            }
+            else
+            {
+                _dialogueButtonController.UpdateQuestionButtonText(_currentNodeInstance.playerReplies);
+            }
+        }
+
+        private async void AIAcceptButtonHandler(string input)
+        {
+            var output = await _dialogueWebClient.GetText(input);
+            _currentNodeInstance.npcText = output;
+            _dialogueButtonController.OnUpdatedQuestionEvent();
+            _dialogueInputFieldController.SetActiveDialogueInputFieldUI(false);
+            _isAIDialogueRunning = false;
+        }
+
+        private void InteractionButtonHandler()
+        {
+            if (_canDialogue && !_isDialogueRunning)
+            {
+                StartDialogue(_currentNPCWithDialogue);
+                _isDialogueRunning = true;
+            }
+        }
+    }
+}
