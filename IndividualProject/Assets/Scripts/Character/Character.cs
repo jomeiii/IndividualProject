@@ -4,8 +4,6 @@ namespace Character
 {
     public abstract class Character : MonoBehaviour
     {
-        public int Health { get; protected set; }
-
         protected virtual void Awake()
         {
             
@@ -16,20 +14,6 @@ namespace Character
         }
 
         protected virtual void OnDisable()
-        {
-            
-        }
-
-        public virtual void TakeDamage(int damage)
-        {
-            Health -= damage;
-            if (Health <= 0)
-            {
-                Die();
-            }
-        }
-
-        protected virtual void Die()
         {
             
         }

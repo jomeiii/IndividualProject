@@ -1,6 +1,5 @@
 using Character.Player;
 using Controllers;
-using Systems.DialogueSystem;
 using Systems.DialogueSystem.Nodes;
 using UnityEngine;
 
@@ -8,22 +7,16 @@ namespace Character.NPC.NPCWithDialogue
 {
     public class NPCWithDialogue : NPC
     {
-        [Header("Dialogue Settings")]
-        [SerializeField] private DialogueNode _dialogueNode;
-        
+        [Header("Dialogue Settings")] [SerializeField]
+        private DialogueNode _dialogueNode;
+
         [Header("References")] [SerializeField]
         private TriggerController _triggerController;
 
         [SerializeField] private Transform _dialogueCameraPoint;
 
-        public DialogueNode DialogueNode
-        {
-            get => _dialogueNode;
-            set => _dialogueNode = value;
-        }
+        public DialogueNode DialogueNode => _dialogueNode;
         public Transform DialogueCameraPoint => _dialogueCameraPoint;
-        
-        private DialogueManager DialogueManager => DialogueManager.Instance;
 
         protected override void OnEnable()
         {
@@ -44,6 +37,8 @@ namespace Character.NPC.NPCWithDialogue
         protected override void Awake()
         {
             base.Awake();
+
+            _npcInfoPresenter.OnHealthChanged(-1, -1);
         }
 
         private void TriggerEnter(Collider other)
