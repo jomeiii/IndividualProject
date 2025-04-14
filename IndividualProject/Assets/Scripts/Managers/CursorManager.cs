@@ -7,7 +7,7 @@ namespace Managers
     {
         public static event Action CursorEnabledEvent;
         public static event Action CursorDisableEvent;
-        
+
         private static bool CursorEnebled;
 
         private void Awake()
@@ -19,7 +19,7 @@ namespace Managers
         {
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
-            
+
             CursorEnebled = true;
             CursorEnabledEvent?.Invoke();
         }
@@ -28,9 +28,21 @@ namespace Managers
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
-            
+
             CursorEnebled = false;
             CursorDisableEvent?.Invoke();
+        }
+
+        public static void ToggleCursor()
+        {
+            if (CursorEnebled)
+            {
+                DisableCursor();
+            }
+            else
+            {
+                EnableCursor();
+            }
         }
     }
 }

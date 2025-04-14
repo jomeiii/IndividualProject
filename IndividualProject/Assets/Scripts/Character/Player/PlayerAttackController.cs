@@ -25,10 +25,5 @@ namespace Character.Player
             _isAttacking = false;
             _playerAnimatorController.StopAttackAnimation();
         }
-
-        private void StopIsAttacking()
-        {
-            _playerController.Weapon.IsAttacking = false;
-        }
     }
 }

@@ -1,7 +1,5 @@
-using Character;
 using Character.AttackCharacter;
 using Controllers;
-using TMPro.EditorUtilities;
 using UnityEngine;
 
 namespace Weapons
@@ -47,6 +45,7 @@ namespace Weapons
                 if (_isAttacking)
                 {
                     attackCharacterColliderController.IAttackCharacter.GetDamage(_damage);
+                    _isAttacking = false;
                 }
             }
         }

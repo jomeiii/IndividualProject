@@ -11,7 +11,7 @@ namespace Character.NPC
         [Header("References")] [SerializeField]
         protected NPCInfoPresenter _npcInfoPresenter;
         [SerializeField] private Transform _cameraTransform;
-        
+
         public Transform CameraTransform => _cameraTransform;
         
         protected override void Awake()
@@ -21,7 +21,7 @@ namespace Character.NPC
             _npcInfoPresenter.SetNameText();
         }
 
-        protected void Update()
+        protected virtual void Update()
         {
             _npcInfoPresenter.UpdateNPCInfoRotation();
         }
