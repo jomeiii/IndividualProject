@@ -12,6 +12,7 @@ namespace Character.NPC.Presenters
         [Header("References")] [SerializeField]
         private NPC _npc;
 
+        [SerializeField] private Transform _cnavas;
         [SerializeField] private RectTransform _npcInfoImage;
         [SerializeField] private TextMeshProUGUI _nameText;
         [SerializeField] private GameObject _hpBG;
@@ -40,11 +41,14 @@ namespace Character.NPC.Presenters
             _nameText.text = _npc.npcName;
         }
 
-        public void UpdateNPCInfoRotation()
+        public void UpdateNPCInfoRotation(Transform target, bool needInvert)
         {
-            _transform.LookAt(_npc.CameraTransform);
+            _transform.LookAt(target);
+            float direction = needInvert ? -1f : 1f;
+            _cnavas.localScale = new Vector3(direction * Mathf.Abs(_cnavas.localScale.x), _cnavas.localScale.y, _cnavas.localScale.z);
             _transform.rotation = Quaternion.Euler(0, _transform.rotation.eulerAngles.y, 0);
         }
+
 
         public void OnHealthChanged(int health, int maxHealth)
         {

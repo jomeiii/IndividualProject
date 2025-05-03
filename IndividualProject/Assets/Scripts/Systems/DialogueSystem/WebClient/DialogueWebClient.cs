@@ -6,6 +6,7 @@ using Dynamic;
 using Newtonsoft.Json;
 using Systems.DialogueSystem.WebClient.Bodies;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Systems.DialogueSystem.WebClient
 {
@@ -17,6 +18,12 @@ namespace Systems.DialogueSystem.WebClient
             "OTRjOTJhZTAtNWMwMS00MGUzLWJjZjAtNjQ2MzMxNzkwMjg1OjM3OTVhZmFjLTZmYWMtNDMyZC1iM2RkLWFjMjIxNDMyNTkwZg==";
 
         private static string AccessToken;
+        private static Dictionary<string, List<Message>> _messages;
+
+        static DialogueWebClient()
+        {
+            _messages = new Dictionary<string, List<Message>>();
+        }
 
         public async Task GetAccessToken()
         {
@@ -56,16 +63,23 @@ namespace Systems.DialogueSystem.WebClient
             }
         }
 
-        public async Task<string> GetText(string input)
+        public async Task<string> GetText(string input, string promt, string npcName)
         {
             string url = "https://gigachat.devices.sberbank.ru/api/v1/chat/completions";
 
-            var messages = new List<RequestBody.Message>
+            if (!_messages.ContainsKey(npcName))
             {
-                new RequestBody.Message("user", input)
-            };
+                _messages.Add(npcName, new List<Message>());
+            }
 
-            var requestBody = new RequestBody("GigaChat", messages, 1, false, 512, 1, 0);
+            _messages[npcName].Add(new Message("user", $"{promt}\n{input}"));
+
+            for (int i = 0; i < _messages[npcName].Count; i++)
+            {
+                Debug.Log(_messages[npcName][i].role + " " + _messages[npcName][i].content);
+            }
+
+            var requestBody = new RequestBody("GigaChat", _messages[npcName], 1, false, 512, 1, 0);
             var json = JsonConvert.SerializeObject(requestBody);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
@@ -80,12 +94,17 @@ namespace Systems.DialogueSystem.WebClient
                 request.Headers.Add("Authorization", $"Bearer {AccessToken}");
 
                 using HttpResponseMessage response = await Client.SendAsync(request);
+
                 response.EnsureSuccessStatusCode();
 
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var responseJson = JsonConvert.DeserializeObject<ResponseBody>(responseBody);
-                var answer = responseJson.choices[0].message.content;
-                return answer;
+                var answer = responseJson.choices[^1].message;
+                _messages[npcName].Add(answer);
+
+                Debug.Log(responseBody);
+
+                return answer.content;
             }
             catch (HttpRequestException e)
             {

@@ -18,6 +18,8 @@ namespace Systems.DialogueSystem.CameraController
 
         [SerializeField] PlayerController _playerController;
 
+        private Transform _cameraTransformTemp;
+
         private void Awake()
         {
             SwitchToMainCamera();
@@ -29,13 +31,13 @@ namespace Systems.DialogueSystem.CameraController
         /// <param name="isDialogueCamera">If is dialogue camera - true or if is main camera - false</param>
         public void StartAnimCamera(NPCWithDialogue npcWithDialogue, Action onCameraSwitch)
         {
-            Action action = () =>
-            {
-                onCameraSwitch?.Invoke();
-            };
+            Action action = () => { onCameraSwitch?.Invoke(); };
             if (npcWithDialogue != null)
                 action += () =>
                 {
+                    _cameraTransformTemp = npcWithDialogue.CameraTransform;
+                    npcWithDialogue.CameraTransform = npcWithDialogue.DialogueCameraPoint;
+                    npcWithDialogue.NeedInvert = false;
                     SwitchToDialogueCamera(npcWithDialogue.DialogueCameraPoint);
                     _playerController.DialogueStart();
                     CursorManager.EnableCursor();
@@ -43,6 +45,8 @@ namespace Systems.DialogueSystem.CameraController
             else
                 action += () =>
                 {
+                    npcWithDialogue.CameraTransform = _cameraTransformTemp;
+                    npcWithDialogue.NeedInvert = true;
                     SwitchToMainCamera();
                     _playerController.DialogueEnd();
                     CursorManager.DisableCursor();

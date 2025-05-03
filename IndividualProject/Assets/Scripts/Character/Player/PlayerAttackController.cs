@@ -16,7 +16,6 @@ namespace Character.Player
             if (_isAttacking) return;
 
             _isAttacking = true;
-            _playerController.Weapon.IsAttacking = true;
             _playerAnimatorController.StartAttackAnimation();
         }
 
@@ -24,6 +23,11 @@ namespace Character.Player
         {
             _isAttacking = false;
             _playerAnimatorController.StopAttackAnimation();
+        }
+
+        private void CanAttack()
+        {
+            _playerController.Weapon.IsAttacking = true;
         }
     }
 }

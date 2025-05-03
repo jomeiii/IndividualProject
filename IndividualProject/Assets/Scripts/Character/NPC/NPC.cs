@@ -8,11 +8,25 @@ namespace Character.NPC
         [Header("Settings")]
         public string npcName;
 
+        [SerializeField] protected bool _needInvert = true;
+
         [Header("References")] [SerializeField]
         protected NPCInfoPresenter _npcInfoPresenter;
+
         [SerializeField] private Transform _cameraTransform;
 
-        public Transform CameraTransform => _cameraTransform;
+        public Transform CameraTransform
+        {
+            get => _cameraTransform;
+            set => _cameraTransform = value;
+        }
+        public NPCInfoPresenter NPCInfoPresenter => _npcInfoPresenter;
+
+        public bool NeedInvert
+        {
+            get => _needInvert;
+            set => _needInvert = value;
+        }
         
         protected override void Awake()
         {
@@ -23,7 +37,7 @@ namespace Character.NPC
 
         protected virtual void Update()
         {
-            _npcInfoPresenter.UpdateNPCInfoRotation();
+            _npcInfoPresenter.UpdateNPCInfoRotation(_cameraTransform, _needInvert);
         }
     }
 }

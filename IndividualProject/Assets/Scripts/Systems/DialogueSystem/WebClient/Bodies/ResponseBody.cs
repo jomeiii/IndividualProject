@@ -21,13 +21,6 @@ namespace Systems.DialogueSystem.WebClient.Bodies
     }
 
     [System.Serializable]
-    public class Message
-    {
-        public string role;
-        public string content;
-    }
-
-    [System.Serializable]
     public class Usage
     {
         public int prompt_tokens;

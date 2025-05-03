@@ -1,3 +1,4 @@
+using System;
 using Character.NPC.NPCWithDialogue;
 using StarterAssets;
 using Systems;
@@ -9,6 +10,8 @@ namespace Character.Player
 {
     public class PlayerController : Character, IAttackCharacter
     {
+        public event Action<int> HealthChangedEvent;
+
         [Header("Settings")] [SerializeField] private int _health;
         [SerializeField] private Weapon _weapon;
 
@@ -16,9 +19,10 @@ namespace Character.Player
         private ThirdPersonController _thirdPersonController;
 
         [SerializeField] private PlayerAttackController _playerAttackController;
-
         [SerializeField] private Transform _spawnPosition;
         [SerializeField] private GameObject _visuals;
+
+        private int _maxHealth;
 
         public int Health
         {
@@ -32,8 +36,8 @@ namespace Character.Player
             set => _weapon = value;
         }
 
-
         public ThirdPersonController ThirdPersonController => _thirdPersonController;
+        public int MaxHealth => _maxHealth;
 
         private InputManager InputManager => InputManager.Instance;
         private DialogueManager DialogueManager => DialogueManager.Instance;
@@ -50,6 +54,13 @@ namespace Character.Player
             base.OnDisable();
 
             InputManager.AttackButtonPressedEvent -= OnAttackButton;
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+
+            _maxHealth = Health;
         }
 
         public void DialogueStart()
@@ -85,6 +96,10 @@ namespace Character.Player
             if (_health <= 0)
             {
                 Die();
+            }
+            else
+            {
+                HealthChangedEvent?.Invoke(_health);
             }
         }
 

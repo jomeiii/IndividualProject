@@ -112,7 +112,8 @@ namespace Systems.DialogueSystem
 
         private async void AIAcceptButtonHandler(string input)
         {
-            var output = await _dialogueWebClient.GetText(input);
+            var output = await _dialogueWebClient.GetText(input, _currentNPCWithDialogue.DialogueNode.PromtText,
+                _currentNPCWithDialogue.npcName);
             _currentNodeInstance.npcText = output;
             _dialogueButtonController.OnUpdatedQuestionEvent();
             _dialogueInputFieldController.SetActiveDialogueInputFieldUI(false);

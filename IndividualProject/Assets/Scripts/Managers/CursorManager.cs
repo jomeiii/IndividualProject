@@ -15,6 +15,14 @@ namespace Managers
             DisableCursor();
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                ToggleCursor();
+            }
+        }
+
         public static void EnableCursor()
         {
             Cursor.visible = true;
