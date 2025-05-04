@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Character.NPC.Presenters;
 using UnityEngine;
 
@@ -5,6 +6,9 @@ namespace Character.NPC
 {
     public abstract class NPC : Character
     {
+        protected static readonly int Idle = Animator.StringToHash("Idle");
+        protected static readonly int Walk = Animator.StringToHash("Walk");
+        
         [Header("Settings")]
         public string npcName;
 
@@ -14,6 +18,8 @@ namespace Character.NPC
         protected NPCInfoPresenter _npcInfoPresenter;
 
         [SerializeField] private Transform _cameraTransform;
+        
+        protected Animator _animator;
 
         public Transform CameraTransform
         {
@@ -31,7 +37,7 @@ namespace Character.NPC
         protected override void Awake()
         {
             base.Awake();
-            
+            _animator = GetComponent<Animator>();
             _npcInfoPresenter.SetNameText();
         }
 

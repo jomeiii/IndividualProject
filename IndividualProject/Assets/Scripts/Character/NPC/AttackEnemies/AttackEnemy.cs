@@ -1,7 +1,7 @@
 using UnityEngine;
 using Weapons;
 
-namespace Character.NPC
+namespace Character.NPC.AttackEnemies
 {
     public class AttackEnemy : NPC, IAttackCharacter
     {
@@ -9,8 +9,6 @@ namespace Character.NPC
 
         [SerializeField] protected int _health;
         [SerializeField] protected Weapon _weapon;
-
-        [SerializeField] protected Animator _animator;
 
         protected int _maxHealth;
         
@@ -38,7 +36,7 @@ namespace Character.NPC
 
         public void TakeDamage(IAttackCharacter iAttackCharacter)
         {
-            throw new System.NotImplementedException();
+            iAttackCharacter.GetDamage(_weapon.Damage);
         }
 
         public void GetDamage(int damage)
@@ -59,23 +57,14 @@ namespace Character.NPC
             Destroy(gameObject);
         }
 
-        protected void StartAttacking(Transform target)
+        public void CanAttackOn()
         {
-            if (_weapon.IsAttacking || _isAttacking) return;
-
             _weapon.IsAttacking = true;
-            _isAttacking = true;
-            _animator.applyRootMotion = true;
-            transform.LookAt(target);
-            transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
-            _animator.SetTrigger(Attack);
         }
 
-        private void StopAttacking()
+        public void CanAttackOff()
         {
-            _animator.applyRootMotion = false;
             _weapon.IsAttacking = false;
-            _isAttacking = false;
         }
     }
 }

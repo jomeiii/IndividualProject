@@ -10,5 +10,8 @@ namespace Character
         public void TakeDamage(IAttackCharacter iAttackCharacter);
         public void GetDamage(int damage);
         public void Die();
+
+        public void CanAttackOn();
+        public void CanAttackOff();
     }
 }

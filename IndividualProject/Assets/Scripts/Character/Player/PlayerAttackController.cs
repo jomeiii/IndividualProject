@@ -4,8 +4,6 @@ namespace Character.Player
 {
     public class PlayerAttackController : MonoBehaviour
     {
-        [Header("Settings")] [SerializeField] private bool _isAttacking;
-
         [Header("References")] [SerializeField]
         private PlayerAnimatorController _playerAnimatorController;
 
@@ -13,21 +11,23 @@ namespace Character.Player
 
         public void StartAttacking()
         {
-            if (_isAttacking) return;
+            if (_playerController.Weapon.IsAttacking) return;
 
-            _isAttacking = true;
+            _playerController.Weapon.IsAttacking = true;
             _playerAnimatorController.StartAttackAnimation();
         }
 
         private void StopAttacking()
         {
-            _isAttacking = false;
+            if (!_playerController.Weapon.IsAttacking) return;
+
+            _playerController.Weapon.IsAttacking = false;
             _playerAnimatorController.StopAttackAnimation();
         }
 
-        private void CanAttack()
+        public void CanAttackChangeValue(bool state)
         {
-            _playerController.Weapon.IsAttacking = true;
+            _playerController.Weapon.CanAttack = state;
         }
     }
 }

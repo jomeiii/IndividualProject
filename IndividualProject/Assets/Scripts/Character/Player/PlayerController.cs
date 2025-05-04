@@ -89,6 +89,16 @@ namespace Character.Player
         {
             iAttackCharacter.GetDamage(_weapon.Damage);
         }
+        
+        public void CanAttackOn()
+        {
+            _playerAttackController.CanAttackChangeValue(true);
+        }
+
+        public void CanAttackOff()
+        {
+            _playerAttackController.CanAttackChangeValue(false);
+        }
 
         public void GetDamage(int damage)
         {
