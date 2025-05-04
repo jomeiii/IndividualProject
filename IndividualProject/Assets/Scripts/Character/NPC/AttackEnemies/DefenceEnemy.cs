@@ -1,3 +1,4 @@
+using Character.AttackCharacter;
 using Character.Player;
 using Controllers;
 using UnityEngine;
@@ -14,27 +15,34 @@ namespace Character.NPC.AttackEnemies
         private Vector3 _startPosition;
         private float _originalStoppingDistance;
         private bool _isGoingToStartPosition;
+        private bool _waitingForPlayer;
+
+        private Transform _attackerTransform;
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            
+
             _followingTriggerController.OnTriggerStayEvent += OnFollowingTriggerStay;
             _followingTriggerController.OnTriggerExitEvent += OnFollowingTriggerExit;
+
+            _weapon.triggerController.OnTriggerEnterEvent += OnWeaponTriggerEnter;
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
-            
+
             _followingTriggerController.OnTriggerStayEvent -= OnFollowingTriggerStay;
             _followingTriggerController.OnTriggerExitEvent -= OnFollowingTriggerExit;
+            
+            _weapon.triggerController.OnTriggerEnterEvent -= OnWeaponTriggerEnter;
         }
 
         protected override void Awake()
         {
             base.Awake();
-            
+
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _startPosition = transform.position;
             _originalStoppingDistance = _navMeshAgent.stoppingDistance;
@@ -44,38 +52,56 @@ namespace Character.NPC.AttackEnemies
         {
             base.Update();
 
-            if (!_isFollowing)
+            if (!_isFollowing && !_weapon.IsAttacking)
             {
                 if (!_navMeshAgent.pathPending && _navMeshAgent.remainingDistance <= _navMeshAgent.stoppingDistance)
                 {
                     if (!_navMeshAgent.hasPath || _navMeshAgent.velocity.sqrMagnitude == 0f)
                     {
-                        if (!_isGoingToStartPosition)
+                        if (!_isGoingToStartPosition && !_waitingForPlayer)
                         {
                             _navMeshAgent.stoppingDistance = 0f;
                             _navMeshAgent.SetDestination(_startPosition);
                             _isGoingToStartPosition = true;
+                            _animator.SetBool(Walk, true);
+                            _animator.SetBool(Idle, false);
                         }
-                        else
+                        else if (_isGoingToStartPosition)
                         {
                             _isGoingToStartPosition = false;
                             _navMeshAgent.stoppingDistance = _originalStoppingDistance;
-                            _animator.SetBool(Idle, true);
                             _animator.SetBool(Walk, false);
+                            _animator.SetBool(Idle, true);
+
+                            _waitingForPlayer = true;
                         }
                     }
                 }
             }
         }
 
+        protected override void StartAttacking()
+        {
+            base.StartAttacking();
+
+            _navMeshAgent.SetDestination(_navMeshAgent.transform.position);
+            _navMeshAgent.transform.LookAt(_attackerTransform);
+            _navMeshAgent.transform.rotation = Quaternion.Euler(0f, _navMeshAgent.transform.rotation.eulerAngles.y, 0f);
+        }
+
         private void OnFollowingTriggerStay(Collider other)
         {
             if (IsPlayerObject(other, out PlayerController playerController))
             {
-                _navMeshAgent.SetDestination(playerController.transform.position);
-                _animator.SetBool(Idle, false);
-                _animator.SetBool(Walk, true);
-                _isFollowing = true;
+                if (_waitingForPlayer || !_isFollowing)
+                {
+                    _waitingForPlayer = false;
+                    _isFollowing = true;
+
+                    _navMeshAgent.SetDestination(playerController.transform.position);
+                    _animator.SetBool(Idle, false);
+                    _animator.SetBool(Walk, true);
+                }
             }
         }
 
@@ -84,6 +110,14 @@ namespace Character.NPC.AttackEnemies
             if (IsPlayerObject(other, out PlayerController playerController))
             {
                 _isFollowing = false;
+            }
+        }
+
+        private void OnWeaponTriggerEnter(Collider other)
+        {
+            if (other.TryGetComponent(out AttackCharacterColliderController attackCharacterColliderController))
+            {
+                Debug.Log("fgplskafglaksg;lkj");
             }
         }
 

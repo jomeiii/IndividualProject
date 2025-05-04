@@ -2488,6 +2488,72 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 396320707}
   m_CullTransparentMesh: 1
+--- !u!1 &400973875
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 400973876}
+  - component: {fileID: 400973877}
+  - component: {fileID: 400973878}
+  m_Layer: 0
+  m_Name: WeaponAttackTriggerControllerler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &400973876
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400973875}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0.546}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1788814167}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &400973877
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400973875}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.23, y: 1.8, z: 0.6709332}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &400973878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400973875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4cdc6eaea454fbdbaac4222b9548fa2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &473554113 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3833629286661373277, guid: 5034445039f5a4054b977aedf0279959, type: 3}
@@ -2645,7 +2711,7 @@ GameObject:
   - component: {fileID: 606751507}
   - component: {fileID: 606751508}
   m_Layer: 8
-  m_Name: WeaponAttackTriggerController
+  m_Name: WeaponAttackTriggerControllerler
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2766,9 +2832,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8594617589995319050, guid: ca92cad5fc837c44181f97e67e9cc297, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1922506505}
-    - targetCorrespondingSourceObject: {fileID: 8594617589995319050, guid: ca92cad5fc837c44181f97e67e9cc297, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1922506504}
   m_SourcePrefab: {fileID: 100100000, guid: ca92cad5fc837c44181f97e67e9cc297, type: 3}
 --- !u!4 &698028532 stripped
 Transform:
@@ -4446,8 +4509,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1187314880}
-  - component: {fileID: 1187314882}
   - component: {fileID: 1187314881}
+  - component: {fileID: 1187314882}
   m_Layer: 8
   m_Name: AttackCharacterController
   m_TagString: Untagged
@@ -5709,6 +5772,7 @@ Transform:
   - {fileID: 96223113}
   - {fileID: 1187314880}
   - {fileID: 1967141100}
+  - {fileID: 400973876}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &1788814169
@@ -5998,18 +6062,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 8594617589995319050, guid: ca92cad5fc837c44181f97e67e9cc297, type: 3}
   m_PrefabInstance: {fileID: 698028531}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1922506504
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1922506501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4cdc6eaea454fbdbaac4222b9548fa2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1922506505
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6025,7 +6077,7 @@ MonoBehaviour:
   _damage: 10
   _isAttacking: 0
   _canAttack: 0
-  triggerController: {fileID: 1922506504}
+  triggerController: {fileID: 400973878}
 --- !u!64 &1922506506
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -6279,8 +6331,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1967141100}
-  - component: {fileID: 1967141102}
   - component: {fileID: 1967141101}
+  - component: {fileID: 1967141102}
   m_Layer: 0
   m_Name: FollowingTriggerController
   m_TagString: Untagged

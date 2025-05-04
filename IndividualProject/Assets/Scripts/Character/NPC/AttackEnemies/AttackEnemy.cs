@@ -11,8 +11,6 @@ namespace Character.NPC.AttackEnemies
         [SerializeField] protected Weapon _weapon;
 
         protected int _maxHealth;
-        
-        private bool _isAttacking;
 
         public int Health
         {
@@ -65,6 +63,21 @@ namespace Character.NPC.AttackEnemies
         public void CanAttackOff()
         {
             _weapon.IsAttacking = false;
+        }
+
+        protected virtual void StartAttacking()
+        {
+            if (_weapon.IsAttacking) return;
+            
+            _weapon.IsAttacking = true;
+            _animator.applyRootMotion = true;
+            _animator.SetTrigger(Attack);
+        }
+
+        protected virtual void StopAttacking()
+        {
+            _weapon.IsAttacking = false;
+            _animator.applyRootMotion = false;
         }
     }
 }
