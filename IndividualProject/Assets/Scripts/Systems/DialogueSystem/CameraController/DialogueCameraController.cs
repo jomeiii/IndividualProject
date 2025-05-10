@@ -29,10 +29,10 @@ namespace Systems.DialogueSystem.CameraController
         /// Switch camera with animation
         /// </summary>
         /// <param name="isDialogueCamera">If is dialogue camera - true or if is main camera - false</param>
-        public void StartAnimCamera(NPCWithDialogue npcWithDialogue, Action onCameraSwitch)
+        public void StartAnimCamera(bool state, NPCWithDialogue npcWithDialogue, Action onCameraSwitch, Action onFinish)
         {
             Action action = () => { onCameraSwitch?.Invoke(); };
-            if (npcWithDialogue != null)
+            if (state)
                 action += () =>
                 {
                     _cameraTransformTemp = npcWithDialogue.CameraTransform;
@@ -53,6 +53,8 @@ namespace Systems.DialogueSystem.CameraController
                 };
 
             StartCoroutine(_dialogueCameraSwitcherPresenter.SwitchCameraAnim(action));
+
+            onFinish?.Invoke();
         }
 
         private void SwitchToDialogueCamera(Transform dialogueCameraPoint)

@@ -57,12 +57,12 @@ namespace Character.NPC.AttackEnemies
 
         public void CanAttackOn()
         {
-            _weapon.IsAttacking = true;
+            _weapon.CanAttack = true;
         }
 
         public void CanAttackOff()
         {
-            _weapon.IsAttacking = false;
+            _weapon.CanAttack = false;
         }
 
         protected virtual void StartAttacking()

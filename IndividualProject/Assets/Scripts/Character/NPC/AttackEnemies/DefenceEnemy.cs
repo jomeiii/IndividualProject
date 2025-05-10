@@ -16,6 +16,7 @@ namespace Character.NPC.AttackEnemies
         private float _originalStoppingDistance;
         private bool _isGoingToStartPosition;
         private bool _waitingForPlayer;
+        private IAttackCharacter _npcIAttackCharacter;
 
         private Transform _attackerTransform;
 
@@ -26,7 +27,7 @@ namespace Character.NPC.AttackEnemies
             _followingTriggerController.OnTriggerStayEvent += OnFollowingTriggerStay;
             _followingTriggerController.OnTriggerExitEvent += OnFollowingTriggerExit;
 
-            _weapon.triggerController.OnTriggerEnterEvent += OnWeaponTriggerEnter;
+            _weapon.triggerController.OnTriggerStayEvent += OnWeaponTriggerStay;
         }
 
         protected override void OnDisable()
@@ -35,8 +36,8 @@ namespace Character.NPC.AttackEnemies
 
             _followingTriggerController.OnTriggerStayEvent -= OnFollowingTriggerStay;
             _followingTriggerController.OnTriggerExitEvent -= OnFollowingTriggerExit;
-            
-            _weapon.triggerController.OnTriggerEnterEvent -= OnWeaponTriggerEnter;
+
+            _weapon.triggerController.OnTriggerStayEvent -= OnWeaponTriggerStay;
         }
 
         protected override void Awake()
@@ -46,6 +47,7 @@ namespace Character.NPC.AttackEnemies
             _navMeshAgent = GetComponent<NavMeshAgent>();
             _startPosition = transform.position;
             _originalStoppingDistance = _navMeshAgent.stoppingDistance;
+            _npcIAttackCharacter = GetComponent<IAttackCharacter>();
         }
 
         protected override void Update()
@@ -93,9 +95,8 @@ namespace Character.NPC.AttackEnemies
         {
             if (IsPlayerObject(other, out PlayerController playerController))
             {
-                if (_waitingForPlayer || !_isFollowing)
+                if (_waitingForPlayer)
                 {
-                    _waitingForPlayer = false;
                     _isFollowing = true;
 
                     _navMeshAgent.SetDestination(playerController.transform.position);
@@ -110,14 +111,18 @@ namespace Character.NPC.AttackEnemies
             if (IsPlayerObject(other, out PlayerController playerController))
             {
                 _isFollowing = false;
+                _waitingForPlayer = false;
             }
         }
 
-        private void OnWeaponTriggerEnter(Collider other)
+        private void OnWeaponTriggerStay(Collider other)
         {
             if (other.TryGetComponent(out AttackCharacterColliderController attackCharacterColliderController))
             {
-                Debug.Log("fgplskafglaksg;lkj");
+                if (_npcIAttackCharacter != attackCharacterColliderController.IAttackCharacter && !_weapon.IsAttacking)
+                {
+                    StartAttacking();
+                }
             }
         }
 

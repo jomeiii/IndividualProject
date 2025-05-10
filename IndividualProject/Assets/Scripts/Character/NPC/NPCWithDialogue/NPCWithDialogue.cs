@@ -46,6 +46,7 @@ namespace Character.NPC.NPCWithDialogue
             if (other.TryGetComponent(out PlayerController playerController))
             {
                 playerController.TriggerEnterNPCWithDialogue(this);
+                Debug.Log("flms;glksd;gk");
             }
         }
 

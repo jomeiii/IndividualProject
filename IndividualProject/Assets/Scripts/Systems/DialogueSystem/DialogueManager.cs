@@ -1,3 +1,4 @@
+using System;
 using Character.NPC.NPCWithDialogue;
 using Character.Player;
 using Systems.DialogueSystem.CameraController;
@@ -10,6 +11,9 @@ namespace Systems.DialogueSystem
 {
     public class DialogueManager : Singleton<DialogueManager>
     {
+        public event Action<NPCWithDialogue> NPCMovementStartedEvent;
+
+
         [Header("References")] [SerializeField]
         private DialogueCameraController _dialogueCameraController;
 
@@ -52,27 +56,35 @@ namespace Systems.DialogueSystem
         {
             base.Awake();
 
-            _dialogueWebClient = new DialogueWebClient();
-            await _dialogueWebClient.GetAccessToken();
+            try
+            {
+                _dialogueWebClient = new DialogueWebClient();
+                await _dialogueWebClient.GetAccessToken();
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         public void StartDialogue(NPCWithDialogue npcWithDialogue)
         {
             _currentNPCWithDialogue = npcWithDialogue;
             _currentNodeInstance = new DialogueNodeInstance(npcWithDialogue.DialogueNode);
-            _dialogueCameraController.StartAnimCamera(_currentNPCWithDialogue, () =>
-            {
-                _dialoguePresenter.SetActiveDialogueUI(true);
-                _dialogueButtonController.UpdateQuestionButtonText(_currentNodeInstance.playerReplies);
-            });
+            _dialogueCameraController.StartAnimCamera(true, _currentNPCWithDialogue, () =>
+                {
+                    _dialoguePresenter.SetActiveDialogueUI(true);
+                    _dialogueButtonController.UpdateQuestionButtonText(_currentNodeInstance.playerReplies);
+                },
+                () => { });
         }
 
         public void StopDialogue()
         {
-            _currentNPCWithDialogue = null;
             _isDialogueRunning = false;
-            _dialogueCameraController.StartAnimCamera(_currentNPCWithDialogue,
-                () => { _dialoguePresenter.SetActiveDialogueUI(false); });
+            _dialogueCameraController.StartAnimCamera(false, _currentNPCWithDialogue,
+                () => { _dialoguePresenter.SetActiveDialogueUI(false); },
+                () => { _currentNPCWithDialogue = null; });
         }
 
         public void TriggerEnterNPCWithDialogue(NPCWithDialogue npcWithDialogue)
@@ -103,6 +115,10 @@ namespace Systems.DialogueSystem
             if (_currentNodeInstance.isEndNode)
             {
                 StopDialogue();
+                if (_currentNodeInstance.needMovement)
+                {
+                    NPCMovementStartedEvent?.Invoke(_currentNPCWithDialogue);
+                }
             }
             else
             {

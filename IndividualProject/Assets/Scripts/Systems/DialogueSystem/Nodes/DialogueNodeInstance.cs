@@ -9,11 +9,13 @@ namespace Systems.DialogueSystem.Nodes
         public string npcText;
         public List<PlayerReplyInstance> playerReplies;
         public bool isEndNode;
+        public bool needMovement;
 
         public DialogueNodeInstance(DialogueNode node)
         {
             npcText = node.npcText;
             isEndNode = node.isEndNode;
+            needMovement = node.needMovement;
             playerReplies = new List<PlayerReplyInstance>();
 
             foreach (var reply in node.playerReplies)

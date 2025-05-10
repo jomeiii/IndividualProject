@@ -10,6 +10,7 @@ namespace Systems.DialogueSystem.Nodes
         [TextArea] public string npcText;
         public List<PlayerReply> playerReplies;
         public bool isEndNode;
+        public bool needMovement;
 
         public string PromtText
         {
