@@ -10,11 +10,14 @@ namespace Character.NPC.NPCWithDialogue
         [Header("Dialogue Settings")] [SerializeField]
         private DialogueNode _dialogueNode;
 
+        [SerializeField] protected bool _canDialogue = true;
+
         [Header("References")] [SerializeField]
         private TriggerController _triggerController;
 
         [SerializeField] private Transform _dialogueCameraPoint;
 
+        public bool CanDialogue => _canDialogue;
         public DialogueNode DialogueNode => _dialogueNode;
         public Transform DialogueCameraPoint => _dialogueCameraPoint;
 
@@ -41,16 +44,15 @@ namespace Character.NPC.NPCWithDialogue
             _npcInfoPresenter.OnHealthChanged(-1, -1);
         }
 
-        private void TriggerEnter(Collider other)
+        protected virtual void TriggerEnter(Collider other)
         {
             if (other.TryGetComponent(out PlayerController playerController))
             {
                 playerController.TriggerEnterNPCWithDialogue(this);
-                Debug.Log("flms;glksd;gk");
             }
         }
 
-        private void TriggerExit(Collider other)
+        protected virtual void TriggerExit(Collider other)
         {
             if (other.TryGetComponent(out PlayerController playerController))
             {

@@ -29,7 +29,7 @@ namespace Systems.DialogueSystem.CameraController
         /// Switch camera with animation
         /// </summary>
         /// <param name="isDialogueCamera">If is dialogue camera - true or if is main camera - false</param>
-        public void StartAnimCamera(bool state, NPCWithDialogue npcWithDialogue, Action onCameraSwitch, Action onFinish)
+        public void StartAnimCamera(bool state, NPCWithDialogue npcWithDialogue, Action onCameraSwitch, Action onFinish, Action onCameraSwitchFinish)
         {
             Action action = () => { onCameraSwitch?.Invoke(); };
             if (state)
@@ -52,7 +52,7 @@ namespace Systems.DialogueSystem.CameraController
                     CursorManager.DisableCursor();
                 };
 
-            StartCoroutine(_dialogueCameraSwitcherPresenter.SwitchCameraAnim(action));
+            StartCoroutine(_dialogueCameraSwitcherPresenter.SwitchCameraAnim(action, onCameraSwitchFinish));
 
             onFinish?.Invoke();
         }

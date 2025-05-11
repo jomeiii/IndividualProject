@@ -43,5 +43,5 @@ MonoBehaviour:
   - replyText: "\u041D\u0435\u0442, \u044F \u043F\u043E\u0448\u0435\u043B \u043F\u043E\u043A\u0430!"
     nextNode: {fileID: 11400000, guid: dd7db7436828545ac81d30cb2281214a, type: 2}
     allowCustomInput: 0
-  isEndNode: 1
+  isEndNode: 0
   needMovement: 0

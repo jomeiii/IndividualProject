@@ -11,7 +11,7 @@ namespace Systems.DialogueSystem.CameraController
         [Header("References")] [Tooltip("Image for creating a camera transition")] [SerializeField]
         private CanvasGroup _canvasGroup;
 
-        public IEnumerator SwitchCameraAnim(Action canCameraSwitch)
+        public IEnumerator SwitchCameraAnim(Action canCameraSwitch, Action onFinish)
         {
             float f = 0f;
             while (f < _trantionTime)
@@ -32,6 +32,7 @@ namespace Systems.DialogueSystem.CameraController
             }
 
             _canvasGroup.alpha = 0f;
+            onFinish?.Invoke();
         }
     }
 }

@@ -69,22 +69,26 @@ namespace Systems.DialogueSystem
 
         public void StartDialogue(NPCWithDialogue npcWithDialogue)
         {
-            _currentNPCWithDialogue = npcWithDialogue;
-            _currentNodeInstance = new DialogueNodeInstance(npcWithDialogue.DialogueNode);
-            _dialogueCameraController.StartAnimCamera(true, _currentNPCWithDialogue, () =>
-                {
-                    _dialoguePresenter.SetActiveDialogueUI(true);
-                    _dialogueButtonController.UpdateQuestionButtonText(_currentNodeInstance.playerReplies);
-                },
-                () => { });
+            if (npcWithDialogue.CanDialogue)
+            {
+                _currentNPCWithDialogue = npcWithDialogue;
+                _currentNodeInstance = new DialogueNodeInstance(npcWithDialogue.DialogueNode);
+                _dialogueCameraController.StartAnimCamera(true, _currentNPCWithDialogue, () =>
+                    {
+                        _dialoguePresenter.SetActiveDialogueUI(true);
+                        _dialogueButtonController.UpdateQuestionButtonText(_currentNodeInstance.playerReplies);
+                    },
+                    () => { }, () => { });
+            }
         }
 
-        public void StopDialogue()
+        public void StopDialogue(Action onFinish)
         {
             _isDialogueRunning = false;
             _dialogueCameraController.StartAnimCamera(false, _currentNPCWithDialogue,
                 () => { _dialoguePresenter.SetActiveDialogueUI(false); },
-                () => { _currentNPCWithDialogue = null; });
+                () => { },
+                () => { onFinish?.Invoke(); });
         }
 
         public void TriggerEnterNPCWithDialogue(NPCWithDialogue npcWithDialogue)
@@ -114,11 +118,14 @@ namespace Systems.DialogueSystem
 
             if (_currentNodeInstance.isEndNode)
             {
-                StopDialogue();
-                if (_currentNodeInstance.needMovement)
+                StopDialogue(() =>
                 {
-                    NPCMovementStartedEvent?.Invoke(_currentNPCWithDialogue);
-                }
+                    if (_currentNodeInstance.needMovement)
+                    {
+                        NPCMovementStartedEvent?.Invoke(_currentNPCWithDialogue);
+                        _currentNPCWithDialogue = null;
+                    }
+                });
             }
             else
             {
