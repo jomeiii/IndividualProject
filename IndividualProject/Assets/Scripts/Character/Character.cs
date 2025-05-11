@@ -19,5 +19,10 @@ namespace Character
         {
             
         }
+
+        protected virtual void Start()
+        {
+            
+        }
     }
 }

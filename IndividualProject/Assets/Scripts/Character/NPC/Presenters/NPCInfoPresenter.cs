@@ -45,7 +45,8 @@ namespace Character.NPC.Presenters
         {
             _transform.LookAt(target);
             float direction = needInvert ? -1f : 1f;
-            _cnavas.localScale = new Vector3(direction * Mathf.Abs(_cnavas.localScale.x), _cnavas.localScale.y, _cnavas.localScale.z);
+            _cnavas.localScale = new Vector3(direction * Mathf.Abs(_cnavas.localScale.x), _cnavas.localScale.y,
+                _cnavas.localScale.z);
             _transform.rotation = Quaternion.Euler(0, _transform.rotation.eulerAngles.y, 0);
         }
 
@@ -61,13 +62,17 @@ namespace Character.NPC.Presenters
             {
                 CloseHPBar();
             }
-
-            _hpImage.fillAmount = (float)health / maxHealth;
-            _hpText.text = $"{health}/{maxHealth}";
+            else
+            {
+                _hpImage.fillAmount = (float)health / maxHealth;
+                _hpText.text = $"{health}/{maxHealth}";
+            }
         }
 
         private void CloseHPBar()
         {
+            Debug.Log("f;ksaf;lkas;flk");
+            
             _hpImage.gameObject.SetActive(false);
             _hpText.gameObject.SetActive(false);
             _hpBG.SetActive(false);

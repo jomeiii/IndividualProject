@@ -40,7 +40,7 @@ namespace Character.NPC
             _animator = GetComponent<Animator>();
             _npcInfoPresenter.SetNameText();
         }
-
+        
         protected virtual void Update()
         {
             _npcInfoPresenter.UpdateNPCInfoRotation(_cameraTransform, _needInvert);

@@ -40,7 +40,12 @@ namespace Character.NPC.NPCWithDialogue
         protected override void Awake()
         {
             base.Awake();
-
+        }
+        
+        protected override void Start()
+        {
+            base.Start();
+        
             _npcInfoPresenter.OnHealthChanged(-1, -1);
         }
 

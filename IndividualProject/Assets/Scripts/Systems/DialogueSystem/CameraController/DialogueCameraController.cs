@@ -8,6 +8,9 @@ namespace Systems.DialogueSystem.CameraController
 {
     public class DialogueCameraController : MonoBehaviour
     {
+        private readonly string MainCameraTag = "MainCamera";
+        private readonly string CameraTag = "Camera";
+
         [Header("Settings")] [SerializeField] private Vector3 _cameraOffset;
 
         [Header("Cameras")] [SerializeField] private Camera _mainCamera;
@@ -29,7 +32,8 @@ namespace Systems.DialogueSystem.CameraController
         /// Switch camera with animation
         /// </summary>
         /// <param name="isDialogueCamera">If is dialogue camera - true or if is main camera - false</param>
-        public void StartAnimCamera(bool state, NPCWithDialogue npcWithDialogue, Action onCameraSwitch, Action onFinish, Action onCameraSwitchFinish)
+        public void StartAnimCamera(bool state, NPCWithDialogue npcWithDialogue, Action onCameraSwitch, Action onFinish,
+            Action onCameraSwitchFinish)
         {
             Action action = () => { onCameraSwitch?.Invoke(); };
             if (state)
@@ -37,8 +41,9 @@ namespace Systems.DialogueSystem.CameraController
                 {
                     _cameraTransformTemp = npcWithDialogue.CameraTransform;
                     npcWithDialogue.CameraTransform = npcWithDialogue.DialogueCameraPoint;
-                    npcWithDialogue.NeedInvert = false;
-                    SwitchToDialogueCamera(npcWithDialogue.DialogueCameraPoint);
+                    // npcWithDialogue.NeedInvert = false;
+                    SwitchToDialogueCamera(npcWithDialogue.DialogueCameraPoint,
+                        DialogueManager.Instance.CurrentNPCWithDialogue.transform);
                     _playerController.DialogueStart();
                     CursorManager.EnableCursor();
                 };
@@ -57,20 +62,38 @@ namespace Systems.DialogueSystem.CameraController
             onFinish?.Invoke();
         }
 
-        private void SwitchToDialogueCamera(Transform dialogueCameraPoint)
+        private void SwitchToDialogueCamera(Transform dialogueCameraPoint, Transform lookAtCameraPoint)
         {
-            if (_mainCamera != null) _mainCamera.enabled = false;
+            if (_mainCamera != null)
+            {
+                _mainCamera.enabled = false;
+                _mainCamera.tag = CameraTag;
+            }
+
             if (_dialogueCamera != null)
             {
                 _dialogueCamera.enabled = true;
-                _dialogueCamera.transform.position = dialogueCameraPoint.position + _cameraOffset;
+                _dialogueCamera.transform.LookAt(lookAtCameraPoint);
+                var angle = Quaternion.Euler(0, _dialogueCamera.transform.localEulerAngles.y, 0f);
+                _dialogueCamera.transform.rotation = angle;
+                _dialogueCamera.transform.localPosition = dialogueCameraPoint.position + _cameraOffset;
+                _dialogueCamera.tag = MainCameraTag;
             }
         }
 
         private void SwitchToMainCamera()
         {
-            if (_mainCamera != null) _mainCamera.enabled = true;
-            if (_dialogueCamera != null) _dialogueCamera.enabled = false;
+            if (_mainCamera != null)
+            {
+                _mainCamera.enabled = true;
+                _mainCamera.tag = MainCameraTag;
+            }
+
+            if (_dialogueCamera != null)
+            {
+                _dialogueCamera.enabled = false;
+                _dialogueCamera.tag = CameraTag;
+            }
         }
     }
 }
