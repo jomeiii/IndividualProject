@@ -71,8 +71,6 @@ namespace Character.NPC.Presenters
 
         private void CloseHPBar()
         {
-            Debug.Log("f;ksaf;lkas;flk");
-            
             _hpImage.gameObject.SetActive(false);
             _hpText.gameObject.SetActive(false);
             _hpBG.SetActive(false);

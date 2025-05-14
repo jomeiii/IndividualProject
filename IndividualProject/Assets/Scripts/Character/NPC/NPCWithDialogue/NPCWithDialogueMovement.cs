@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Systems.DialogueSystem;
 using UnityEngine;
@@ -7,8 +8,10 @@ namespace Character.NPC.NPCWithDialogue
 {
     public class NPCWithDialogueMovement : NPCWithDialogue
     {
-        [SerializeField] private Waypoints[] _waypoints;
-        [SerializeField] private int _currentIndex;
+        protected event Action<int> CurrentIndexChangedEvent;
+
+        [SerializeField] protected Waypoints[] _waypoints;
+        [SerializeField] protected int _currentIndex;
 
         private bool _isMoving;
         private NavMeshAgent _navMeshAgent;
@@ -68,8 +71,8 @@ namespace Character.NPC.NPCWithDialogue
 
         private IEnumerator WaitUntilReachedDestination()
         {
-            while (_navMeshAgent.pathPending || 
-                   _navMeshAgent.remainingDistance > _navMeshAgent.stoppingDistance || 
+            while (_navMeshAgent.pathPending ||
+                   _navMeshAgent.remainingDistance > _navMeshAgent.stoppingDistance ||
                    _navMeshAgent.velocity.sqrMagnitude > 0.01f)
             {
                 yield return null;
@@ -99,7 +102,7 @@ namespace Character.NPC.NPCWithDialogue
 
         private void EndMovement()
         {
-            _currentIndex++;
+            CurrentIndexChangedEvent?.Invoke(++_currentIndex);
             _isMoving = false;
             _canDialogue = true;
             SetAnimation(walking: false);
@@ -112,7 +115,7 @@ namespace Character.NPC.NPCWithDialogue
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class Waypoints
     {
         public Transform[] waypoints;

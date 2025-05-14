@@ -29,6 +29,12 @@ namespace Character.NPC.AttackEnemies
             base.Awake();
 
             _maxHealth = _health;
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            
             GetDamage(0);
         }
 
@@ -52,7 +58,8 @@ namespace Character.NPC.AttackEnemies
 
         public void Die()
         {
-            Destroy(gameObject);
+            if (gameObject != null)
+                Destroy(gameObject);
         }
 
         public void CanAttackOn()

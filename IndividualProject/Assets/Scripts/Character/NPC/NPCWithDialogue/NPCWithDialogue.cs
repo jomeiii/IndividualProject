@@ -1,5 +1,6 @@
 using Character.Player;
 using Controllers;
+using Systems.DialogueSystem;
 using Systems.DialogueSystem.Nodes;
 using UnityEngine;
 
@@ -8,7 +9,7 @@ namespace Character.NPC.NPCWithDialogue
     public class NPCWithDialogue : NPC
     {
         [Header("Dialogue Settings")] [SerializeField]
-        private DialogueNode _dialogueNode;
+        protected DialogueNode _dialogueNode;
 
         [SerializeField] protected bool _canDialogue = true;
 
@@ -16,11 +17,13 @@ namespace Character.NPC.NPCWithDialogue
         private TriggerController _triggerController;
 
         [SerializeField] private Transform _dialogueCameraPoint;
-
+        
         public bool CanDialogue => _canDialogue;
         public DialogueNode DialogueNode => _dialogueNode;
         public Transform DialogueCameraPoint => _dialogueCameraPoint;
 
+        protected DialogueManager DialogueManager => DialogueManager.Instance;
+        
         protected override void OnEnable()
         {
             base.OnEnable();

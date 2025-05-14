@@ -13,6 +13,8 @@ namespace Character.Player
         {
             if (_playerController.Weapon.IsAttacking) return;
 
+            // Debug.Log("StartAttacking");
+            
             _playerController.Weapon.IsAttacking = true;
             _playerAnimatorController.StartAttackAnimation();
         }
@@ -20,6 +22,8 @@ namespace Character.Player
         private void StopAttacking()
         {
             if (!_playerController.Weapon.IsAttacking) return;
+            
+            // Debug.Log("StopAttacking");
 
             _playerController.Weapon.IsAttacking = false;
             _playerAnimatorController.StopAttackAnimation();

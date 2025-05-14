@@ -48,11 +48,17 @@ namespace Weapons
 
         protected virtual void Update()
         {
-            if (_iAttackerCharacter != null && _canAttack)
+            if (_canAttack)
             {
-                _iAttackerCharacter.GetDamage(_damage);
-                _canAttack = false;
-                _isAttacking = false;
+                if (_iAttackerCharacter != null)
+                {
+                    _canAttack = false;
+                    _iAttackerCharacter.GetDamage(_damage);
+                    if (_iAttackerCharacter.Health <= 0)
+                    {
+                        _iAttackerCharacter = null;
+                    }
+                }
             }
         }
 
