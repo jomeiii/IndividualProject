@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Controllers
 {
     public class WaterController : MonoBehaviour
-    {
+    { 
         [SerializeField] private TriggerController _triggerController;
 
         private void OnEnable()

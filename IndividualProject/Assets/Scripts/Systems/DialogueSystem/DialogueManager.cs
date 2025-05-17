@@ -13,6 +13,8 @@ namespace Systems.DialogueSystem
     {
         public event Action<NPCWithDialogue> NPCMovementStartedEvent;
 
+        [Header("Settings")] [SerializeField] [TextArea]
+        private string _historyPromt;
 
         [Header("References")] [SerializeField]
         private DialogueCameraController _dialogueCameraController;
@@ -135,8 +137,18 @@ namespace Systems.DialogueSystem
 
         private async void AIAcceptButtonHandler(string input)
         {
-            var output = await _dialogueWebClient.GetText(input, _currentNPCWithDialogue.DialogueNode.PromtText,
-                _currentNPCWithDialogue.npcName);
+            string promt = "";
+            if (string.IsNullOrEmpty(_currentNPCWithDialogue.DialogueNode.PromtText))
+            {
+                promt = "Игрок дал ответ на предыдущее сообщение. " +
+                        "Ответь ему, учитывая весь контекст диалога, и постарайся сохранить суть исходного промта.";
+            }
+            else
+            {
+                promt = _currentNPCWithDialogue.DialogueNode.PromtText + "\n" + _historyPromt;
+            }
+
+            var output = await _dialogueWebClient.GetText(input, promt, _currentNPCWithDialogue.npcName);
             _currentNodeInstance.npcText = output;
             _dialogueButtonController.OnUpdatedQuestionEvent();
             _dialogueInputFieldController.SetActiveDialogueInputFieldUI(false);

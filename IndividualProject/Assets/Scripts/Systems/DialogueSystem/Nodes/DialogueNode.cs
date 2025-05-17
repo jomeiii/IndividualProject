@@ -12,20 +12,7 @@ namespace Systems.DialogueSystem.Nodes
         public bool isEndNode;
         public bool needMovement;
 
-        public string PromtText
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(promtText))
-                {
-                    return
-                        "Игрок дал ответ на предыдущее сообщение. " +
-                        "Ответь ему, учитывая весь контекст диалога, и постарайся сохранить суть исходного промта.";
-                }
-
-                return promtText;
-            }
-        }
+        public string PromtText => promtText;
     }
 
     [System.Serializable]
