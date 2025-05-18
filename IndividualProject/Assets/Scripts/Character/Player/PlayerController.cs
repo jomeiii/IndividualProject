@@ -12,6 +12,8 @@ namespace Character.Player
     {
         public event Action<int> HealthChangedEvent;
 
+        public bool hasGoldenKey;
+
         [Header("Settings")] [SerializeField] private int _health;
         [SerializeField] private Weapon _weapon;
 

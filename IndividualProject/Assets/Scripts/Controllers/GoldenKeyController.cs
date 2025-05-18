@@ -45,6 +45,7 @@ namespace Controllers
             if (other.TryGetComponent(out PlayerController playerController))
             {
                 GoldenKeyPressedEvent?.Invoke();
+                playerController.hasGoldenKey = true;
                 Destroy(gameObject);
             }   
         }

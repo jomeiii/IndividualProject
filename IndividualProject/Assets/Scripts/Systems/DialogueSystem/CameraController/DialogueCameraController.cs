@@ -73,10 +73,10 @@ namespace Systems.DialogueSystem.CameraController
             if (_dialogueCamera != null)
             {
                 _dialogueCamera.enabled = true;
-                _dialogueCamera.transform.LookAt(lookAtCameraPoint);
-                var angle = Quaternion.Euler(0, _dialogueCamera.transform.localEulerAngles.y, 0f);
+                _dialogueCamera.transform.localPosition = dialogueCameraPoint.position;
+                _dialogueCamera.transform.LookAt(DialogueManager.Instance.CurrentNPCWithDialogue.transform);
+                var angle = Quaternion.Euler(0f, _dialogueCamera.transform.eulerAngles.y, 0f);
                 _dialogueCamera.transform.rotation = angle;
-                _dialogueCamera.transform.localPosition = dialogueCameraPoint.position + _cameraOffset;
                 _dialogueCamera.tag = MainCameraTag;
             }
         }
