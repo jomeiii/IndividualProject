@@ -12,8 +12,10 @@ namespace Weapons
         [SerializeField] protected bool _canAttack;
 
         [Header("References")] public TriggerController triggerController;
+        [SerializeField] private GameObject _currentIAttackCharacterGameObject;
 
         private IAttackCharacter _iAttackerCharacter;
+        private IAttackCharacter _currentIAttackCharacter;
 
         public int Damage => _damage;
 
@@ -30,12 +32,12 @@ namespace Weapons
 
         protected virtual void OnEnable()
         {
-            triggerController.OnTriggerEnterEvent += TriggerEnter;
+            triggerController.OnTriggerStayEvent += TriggerStay;
         }
 
         protected virtual void OnDisable()
         {
-            triggerController.OnTriggerEnterEvent -= TriggerEnter;
+            triggerController.OnTriggerStayEvent -= TriggerStay;
         }
 
         protected virtual void Awake()
@@ -44,6 +46,8 @@ namespace Weapons
             {
                 triggerController = GetComponent<TriggerController>();
             }
+
+            _currentIAttackCharacter = _currentIAttackCharacterGameObject.GetComponent<IAttackCharacter>();
         }
 
         protected virtual void Update()
@@ -62,13 +66,16 @@ namespace Weapons
             }
         }
 
-        private void TriggerEnter(Collider other)
+        private void TriggerStay(Collider other)
         {
             if (other.TryGetComponent(out AttackCharacterColliderController attackCharacterColliderController))
             {
                 if (_isAttacking)
                 {
-                    _iAttackerCharacter = attackCharacterColliderController.IAttackCharacter;
+                    if (_currentIAttackCharacter != attackCharacterColliderController.IAttackCharacter)
+                    {
+                        _iAttackerCharacter = attackCharacterColliderController.IAttackCharacter;
+                    }
                 }
             }
         }

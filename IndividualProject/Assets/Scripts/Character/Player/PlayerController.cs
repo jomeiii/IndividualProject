@@ -91,7 +91,7 @@ namespace Character.Player
         {
             iAttackCharacter.GetDamage(_weapon.Damage);
         }
-        
+
         public void CanAttackOn()
         {
             _playerAttackController.CanAttackChangeValue(true);
@@ -109,15 +109,15 @@ namespace Character.Player
             {
                 Die();
             }
-            else
-            {
-                HealthChangedEvent?.Invoke(_health);
-            }
+
+            HealthChangedEvent?.Invoke(_health);
         }
 
         public void Die()
         {
             _thirdPersonController.Teleport(_spawnPosition.position);
+            _health = _maxHealth;
+            HealthChangedEvent?.Invoke(_health);
         }
 
         private void OnAttackButton()
