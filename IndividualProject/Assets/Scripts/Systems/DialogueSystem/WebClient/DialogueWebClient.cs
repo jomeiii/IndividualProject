@@ -79,8 +79,9 @@ namespace Systems.DialogueSystem.WebClient
                 Debug.Log(_messages[npcName][i].role + " " + _messages[npcName][i].content);
             }
 
-            var requestBody = new RequestBody("GigaChat", _messages[npcName], 1, false, 512, 1, 0);
+            var requestBody = new RequestBody("GigaChat", _messages[npcName], 1, false, 512, 1, 0, Random.Range(0, 1.7f));
             var json = JsonConvert.SerializeObject(requestBody);
+            Debug.Log(json);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
 
             try
