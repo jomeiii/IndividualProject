@@ -6,8 +6,8 @@ namespace Systems.DialogueSystem.Nodes
     [CreateAssetMenu(fileName = "DialogueNode", menuName = "Dialogue/DialogueNode")]
     public class DialogueNode : ScriptableObject
     {
-        [TextArea] public string promtText;
-        [TextArea] public string npcText;
+        [TextArea(3, 25)] public string promtText;
+        [TextArea(3, 10)] public string npcText;
         public List<PlayerReply> playerReplies;
         public bool isEndNode;
         public bool needMovement;

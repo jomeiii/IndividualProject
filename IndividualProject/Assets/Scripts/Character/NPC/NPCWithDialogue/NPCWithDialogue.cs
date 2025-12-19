@@ -17,13 +17,21 @@ namespace Character.NPC.NPCWithDialogue
         private TriggerController _triggerController;
 
         [SerializeField] private Transform _dialogueCameraPoint;
-        
+
+        private bool _isFirstDialogue = true;
+
         public bool CanDialogue => _canDialogue;
         public DialogueNode DialogueNode => _dialogueNode;
         public Transform DialogueCameraPoint => _dialogueCameraPoint;
 
+        public bool IsFirstDialogue
+        {
+            get => _isFirstDialogue;
+            set => _isFirstDialogue = value;
+        }
+
         protected DialogueManager DialogueManager => DialogueManager.Instance;
-        
+
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -44,11 +52,11 @@ namespace Character.NPC.NPCWithDialogue
         {
             base.Awake();
         }
-        
+
         protected override void Start()
         {
             base.Start();
-        
+
             _npcInfoPresenter.OnHealthChanged(-1, -1);
         }
 

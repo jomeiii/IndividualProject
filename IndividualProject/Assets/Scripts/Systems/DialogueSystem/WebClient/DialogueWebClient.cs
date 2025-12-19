@@ -25,6 +25,16 @@ namespace Systems.DialogueSystem.WebClient
             _messages = new Dictionary<string, List<Message>>();
         }
 
+        public void AddStartNPCMessage(string message, string npcName)
+        {
+            if (!_messages.ContainsKey(npcName))
+            {
+                _messages.Add(npcName, new List<Message>());
+            }
+            
+            _messages[npcName].Add(new Message("assistant", message));
+        }
+        
         public async Task GetAccessToken()
         {
             string url = "https://ngw.devices.sberbank.ru:9443/api/v2/oauth";
@@ -79,7 +89,8 @@ namespace Systems.DialogueSystem.WebClient
                 Debug.Log(_messages[npcName][i].role + " " + _messages[npcName][i].content);
             }
 
-            var requestBody = new RequestBody("GigaChat", _messages[npcName], 1, false, 512, 1, 0, Random.Range(0, 1.7f));
+            var requestBody =
+                new RequestBody("GigaChat", _messages[npcName], 1, false, 512, 1, 0, Random.Range(0.15f, 1f));
             var json = JsonConvert.SerializeObject(requestBody);
             Debug.Log(json);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -103,6 +114,9 @@ namespace Systems.DialogueSystem.WebClient
                 var answer = responseJson.choices[^1].message;
                 _messages[npcName].Add(answer);
 
+                foreach (var message in _messages[npcName])
+                    Debug.Log(message.role + " " + message.content);
+                
                 Debug.Log(responseBody);
 
                 return answer.content;

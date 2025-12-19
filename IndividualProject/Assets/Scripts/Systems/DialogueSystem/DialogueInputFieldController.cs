@@ -32,6 +32,7 @@ namespace Systems.DialogueSystem
         private void AcceptButtonHandler()
         {
             InputFieldAcceptedEvent?.Invoke(_inputField.text);
+            _inputField.text = "";
         }
     }
 }

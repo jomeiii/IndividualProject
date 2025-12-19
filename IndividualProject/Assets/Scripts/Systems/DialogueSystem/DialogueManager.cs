@@ -13,7 +13,7 @@ namespace Systems.DialogueSystem
     {
         public event Action<NPCWithDialogue> NPCMovementStartedEvent;
 
-        [Header("Settings")] [SerializeField] [TextArea]
+        [Header("Settings")] [SerializeField] [TextArea(3, 20)]
         private string _historyPromt;
 
         [Header("References")] [SerializeField]
@@ -73,8 +73,14 @@ namespace Systems.DialogueSystem
         {
             if (npcWithDialogue.CanDialogue)
             {
+                if (npcWithDialogue.IsFirstDialogue)
+                {
+                    _dialogueWebClient.AddStartNPCMessage(npcWithDialogue.DialogueNode.npcText, npcWithDialogue.npcName);
+                }
+                
                 _currentNPCWithDialogue = npcWithDialogue;
                 _currentNodeInstance = new DialogueNodeInstance(npcWithDialogue.DialogueNode);
+                
                 _dialogueCameraController.StartAnimCamera(true, _currentNPCWithDialogue, () =>
                     {
                         _dialoguePresenter.SetActiveDialogueUI(true);
@@ -148,11 +154,13 @@ namespace Systems.DialogueSystem
                 promt = _currentNPCWithDialogue.DialogueNode.PromtText + "\n" + _historyPromt;
             }
 
+            _dialogueInputFieldController.SetActiveDialogueInputFieldUI(false);
             var output = await _dialogueWebClient.GetText(input, promt, _currentNPCWithDialogue.npcName);
             _currentNodeInstance.npcText = output;
             _dialogueButtonController.OnUpdatedQuestionEvent();
             _dialogueInputFieldController.SetActiveDialogueInputFieldUI(false);
             _isAIDialogueRunning = false;
+            _dialogueInputFieldController.SetActiveDialogueInputFieldUI(true);
         }
 
         private void InteractionButtonHandler()
